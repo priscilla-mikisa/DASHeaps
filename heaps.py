@@ -28,9 +28,14 @@ else:
     print(f"Element {element_to_delete} not found.")
 print("Heap after deletion:", [-x for x in heap])
 
+
+
+
+
+
 """Interview Questions"""
 
-"""Given a stream of integers and a number k, 
+"""1. Given a stream of integers and a number k, 
 design a data structure that can find the kth largest element in the stream.?"""
 
 
@@ -52,9 +57,9 @@ arr = [1, 23,50, 12, 9, 30, 2]
 k=1
 print(kLargest(arr,k))
 
+                                        
 
-
-"""You have a collection of stones, each stone has a positive integer weight.
+"""2. You have a collection of stones, each stone has a positive integer weight.
 Each turn, you choose the two heaviest stones and smash them together.
 Imagine that after each such turn, the remaining stones are piled together.
 After each turn, you choose the two heaviest remaining stones.
@@ -86,6 +91,136 @@ def last_stone_weight(stones):
 stones = [2,7,4,9,80,5]
 results = last_stone_weight(stones)
 print("The weight of the last remaining stone is:", results)
+
+
+"""3. Given a matrix mat where every row is sorted in non-decreasing order and the first integer of each
+row is greater than the last integer of the previous row. Provided also is an integer k. The task is to
+output the k weakest rows in the matrix, in decreasing order of strength."""
+
+"Pseudo Code"
+"""1. Create a function that will take in two arguments. The
+first argument the matrix and the other argument the k-number 
+of elements to return.
+"""
+"""2. Initialize an empty heap to store the tuples having both the index and the total of the elements."""
+"""Loop through the rows to get teir sum and index of eeach row"""
+"""Find the sum and index of each row in the matrix."""
+"""Put the reesults in a new list in ascending order"""
+"""Display the "k" elements from the arranged list."""
+
+
+from heapq import heappush, heappop
+
+def kWeakestRows(mat, k):
+    heap = []
+    for i, row in enumerate(mat):
+        positives = sum(row)
+        heappush(heap, (positives, i))
+    
+    results = []
+    for _ in range(k):
+        results.append(heappop(heap)[1])
+    
+    return results
+
+mat = [[1, 1, 0, 0, 0],
+       [0, 0, 1, 1, 1],
+       [1, 1, 1, 1, 1],
+       [0, 0, 0, 0, 0]]
+k = 2
+
+result = kWeakestRows(mat, k)
+print(result)
+
+"""4. Find the kth largest element in an unsorted array. 
+Note that it is the kth largest element in the sorted order,
+not the kth distinct element.
+"""
+
+"Pseudo Code"
+"1. Create a function that will take in both the  list of numbers and the of 'k' position. "
+"2. Add the first k ele,ents to a list."
+"3. Transform the list to a heap."
+"4. Create a cretaria for adding the numbers from the list in a particular order. ie. only add the number if the current number is larger than the smallest heap."
+"5. Remove the smallest elements to only remain with the largest elements."
+"6. display the largest element."
+
+import heapq
+
+def findKthLargest(nums, k):
+    " Create a min-heap with the first k elements"
+    min_heap = nums[:k]
+    
+    "Transform the list into a heap in O(k) time"
+    heapq.heapify(min_heap) 
+    "Process the remaining elements"
+    for num in nums[k:]:
+        "Only add to heap if the current number is larger than the smallest in the heap"
+        if num > min_heap[0]:
+            "Remove the smallest element"  
+            heapq.heappop(min_heap) 
+            "Add the current number"
+            heapq.heappush(min_heap, num)
+
+    "The root of the min-heap is the kth largest element"
+    return min_heap[0]
+
+
+nums = [7, 10, 4, 3, 20, 15]
+k = 3
+result = findKthLargest(nums, k)
+print(result) 
+
+"""5. Design a data structure that supports the
+following operations: add a number and find the median. """
+import heapq
+
+class MedianFinder:
+    def __init__(self):
+        "Max heap for the lower half (inverted to use Python's min-heap)"
+        self.max_heap = []
+        "Min heap for the upper half"
+        self.min_heap = []
+
+    def addNum(self, num: int) -> None:
+        "Add to max heap (lower half)"
+        heapq.heappush(self.max_heap, -num)
+
+        "Ensure the largest of the lower half is less than or equal to the smallest of the upper half"
+        if (self.max_heap and self.min_heap and 
+            (-self.max_heap[0] > self.min_heap[0])):
+            "Move the largest from max_heap to min_heap"
+            value = -heapq.heappop(self.max_heap)
+            heapq.heappush(self.min_heap, value)
+
+        "Balance the sizes of the heaps"
+        if len(self.max_heap) > len(self.min_heap) + 1:
+            "Move the largest from max_heap to min_heap"
+            value = -heapq.heappop(self.max_heap)
+            heapq.heappush(self.min_heap, value)
+        elif len(self.min_heap) > len(self.max_heap):
+            "Move the smallest from min_heap to max_heap"
+            value = heapq.heappop(self.min_heap)
+            heapq.heappush(self.max_heap, -value)
+
+    def findMedian(self) -> float:
+        if len(self.max_heap) > len(self.min_heap):
+            "If max_heap has more elements, the median is the root of max_heap"
+            return float(-self.max_heap[0])
+        else:
+            "If both heaps are of equal size, the median is the average of the roots"
+            return (-self.max_heap[0] + self.min_heap[0]) / 2.0
+
+medianFinder = MedianFinder()
+medianFinder.addNum(1)
+medianFinder.addNum(2)
+print(medianFinder.findMedian())
+medianFinder.addNum(3)
+print(medianFinder.findMedian()) 
+
+            
+
+   
 
 
 
